@@ -6,6 +6,9 @@ authors = ["Felix Hernandez <you@example.com>", "Cefranlly Perez <cefranllyperez
 license = "MIT License"
 readme = "README.md"
 
+[tool.poetry.scripts]
+gojo-run = "gojo.main:app"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 pydantic = "^2.6.1"
