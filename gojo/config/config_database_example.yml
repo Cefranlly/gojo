@@ -2,7 +2,7 @@ config:
   check_type: database
   slack_token: XXXXXXXXXXXXXXXX
   slack_channels: data-quality-notifications
-  db_connection:
+  source_config:
     host: xxx.xxx.xxx.xxx
     user: yyyy
     password: zzzz
