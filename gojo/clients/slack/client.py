@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Any, Dict
-from slack_sdk import WebhookClient
-from clients.slack.schema import SlackMessageSchema
-from utils.log import get_logger
+from slack_sdk import WebhookClient, WebClient
+from gojo.clients.slack.schema import SlackMessageSchema
+from gojo.utils.log import get_logger
 
 
 logger = get_logger(__name__)
@@ -47,6 +47,40 @@ class SlackWebhookClient(SlackClient):
 
       logger.info(f"send_blocks: {message.blocks}")
       logger.info(f"send_attachments: {message.attachments[0]['blocks']}")
+
+      if response.status_code == OK_STATUS_CODE:
+         return True
+      else:
+         logger.error(
+            f"Couldn't send the message to Slack - error: {response.body}"
+         )
+         return False
+
+
+class SlackWebClient(SlackClient):
+   def __init__(self, token: str) -> None:
+      self._slack_token = token
+      super().__init__()
+
+   def _init_client(self) -> WebClient:
+      return WebClient(
+         token=self._slack_token
+      )
+
+   def send_message(
+         self,
+         channel: str,
+         message: SlackMessageSchema,
+         **kwargs
+         ) -> bool:
+
+      response = self.client.chat_postMessage(
+         channel=channel,
+         text=message.text or "Default message!",
+         blocks=message.blocks
+      )
+
+      logger.info(f"slack response: {response}")
 
       if response.status_code == OK_STATUS_CODE:
          return True

@@ -1,15 +1,11 @@
-from enum import Enum
 from typing import List, Dict, Any, Union
-from clients.slack.schema import SlackBlocksType, SlackMessageSchema
+from gojo.clients.slack.schema import SlackBlocksType, SlackMessageSchema
 
 from slack_sdk.models.blocks import SectionBlock
 
-class MessageColor(Enum):
-   YELLOW = "#ffcc00"
-   RED = "#ff0000"
-
 
 class SlackMessageBuilder:
+   """ This class has all the methods allowed to build a slack message """
    _LONGEST_MARKDOWN_SUFFIX_LEN = 3
    _CONTINUATION_SYMBOL = "..."
    _MAX_SLACK_SECTION_SIZE = 2
@@ -20,30 +16,21 @@ class SlackMessageBuilder:
    def __init__(self) -> None:
       self.slack_message = self._initial_slack_message()
 
-   @classmethod
-   def _initial_slack_message(cls) -> Dict[Any, Any]:
-      return {"blocks": [], "attachments": [{"blocks": []}]}
-
-   def reset_slack_message(self):
-        self.slack_message = self._initial_slack_message()
-
-   def _add_always_displayed_blocks(self, blocks: SlackBlocksType):
-        # In oppose to attachments Blocks are always displayed, use this for parts that should always be displayed in the message
-        self.slack_message["blocks"].extend(blocks)
-
-   def _add_blocks_as_attachments(self, blocks: SlackBlocksType):
-        # The first 5 attachments Blocks are always displayed.
-        # The rest of the attachments Blocks are hidden behind "show more" button.
-        # NOTICE: attachments blocks are deprecated by Slack.
-        self.slack_message["attachments"][0]["blocks"].extend(blocks)
-
    @property
    def blocks(self) -> List:
       return self.slack_message.get("blocks", [])
 
-   @property
-   def attachments(self) -> List:
-      return self.slack_message.get("attachments", [])
+   @classmethod
+   def _initial_slack_message(cls) -> Dict[Any, Any]:
+      return {"blocks": []}
+
+   def reset_slack_message(self):
+        self.slack_message = self._initial_slack_message()
+
+   def _add_blocks(self, blocks: SlackBlocksType):
+        # The first 5 attachments Blocks are always displayed.
+        # The rest of the attachments Blocks are hidden behind "show more" button.
+        self.slack_message["blocks"].extend(blocks)
 
    @staticmethod
    def get_limited_markdown_msg(section_msg: str) -> str:
@@ -104,6 +91,7 @@ class SlackMessageBuilder:
                {
                   "type": "mrkdwn",
                   "text": SlackMessageBuilder.get_limited_markdown_msg(context_msg),
+                  "emoji": True
                }
          )
 
@@ -116,6 +104,7 @@ class SlackMessageBuilder:
          "text": {
                "type": "plain_text",
                "text": msg,
+               "emoji": True
          },
       }
 
@@ -158,6 +147,7 @@ class SlackMessageBuilder:
          section_field = {
                "type": "mrkdwn",
                "text": SlackMessageBuilder.get_limited_markdown_msg(section_msg),
+               "emoji": True
          }
          if len(section_fields) < SlackMessageBuilder._MAX_SLACK_SECTION_SIZE:
                section_fields.append(section_field)
@@ -183,9 +173,3 @@ class SlackMessageBuilder:
       if isinstance(str_List, str):
          str_List = unpack_and_flatten_str_to_List(str_List)
       return ", ".join(sorted(set(str_List)))
-
-   def add_message_color(self, color: MessageColor):
-      for block in self.blocks:
-         block["color"] = color.value
-      for attachment in self.attachments:
-         attachment["color"] = color.value
