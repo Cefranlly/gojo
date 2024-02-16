@@ -1,0 +1,10 @@
+config:
+  check_type: database
+  slack_token: XXXXXXXXXXXXXXXX
+  slack_channels: data-quality-notifications
+  db_connection:
+    host: xxx.xxx.xxx.xxx
+    user: yyyy
+    password: zzzz
+  data_test_files: soda_checks.yml
+  data_test_vars: yyyy-MM-dd
