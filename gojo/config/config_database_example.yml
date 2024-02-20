@@ -3,8 +3,15 @@ config:
   slack_token: XXXXXXXXXXXXXXXX
   slack_channels: data-quality-notifications
   source_config:
-    host: xxx.xxx.xxx.xxx
-    user: yyyy
-    password: zzzz
-  data_test_files: soda_checks.yml
+    type: snowflake
+    account: ACCOUNT_ID.REGION.gcp
+    username: USERNAME
+    password: PASSWORD
+    database: DABABASE
+    schema: SCHEMA
+    warehouse: WAREHOUSE_COMPUTE
+    role: ROLE
+    session_parameters:
+      QUERY_TAG: soda-queries
+  data_test_files: ./soda_checks.yml # review it
   data_test_vars: yyyy-MM-dd

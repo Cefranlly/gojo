@@ -14,7 +14,7 @@ def read_files(files_path: str) -> Union[List[str], str]:
    return ""
 
 
-class SodaTestCli:
+class SodaCli:
 
    def __init__(self) -> None:
       self.soda_scan = Scan()
