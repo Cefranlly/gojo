@@ -1,7 +1,6 @@
-from typing import Union, List
 from soda.scan import Scan
-from utils.log import get_logger
-from data_models.soda_check_model import SodaCheckResponseModel
+from gojo.utils.log import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -10,32 +9,31 @@ SODA_TEST_WARNING = 1	# Soda issues a warning on a check(s)
 SODA_TEST_FAIL = 2 # Soda issues a failure on a check(s)
 
 
-def read_files(files_path: str) -> Union[List[str], str]:
-   return ""
+class SodaCli:
 
+   _soda_scan: Scan
 
-class SodaTestCli:
+   def __init__(self, source_name: str) -> None:
+      self._soda_scan = Scan()
+      self._soda_scan.set_verbose(True)
+      self._soda_scan.set_data_source_name(source_name)
 
-   def __init__(self) -> None:
-      self.soda_scan = Scan()
-      self.soda_scan.set_verbose(True)
-      self.soda_scan.set_data_source_name("conversenow")
+   @property
+   def scan(self) -> Scan:
+      return self._soda_scan
 
-   def get_soda_scan(self) -> Scan:
-      return self.soda_scan
-
-   def run_scan(self):
+   def run_check(self):
       # TODO: Add exceptions handle in here
-      exit_code = self.soda_scan.execute()
+      exit_code = self._soda_scan.execute()
       logger.info(f"Soda test exit_code: {exit_code}")
 
-   def get_scan_results(self) -> SodaCheckResponseModel:
+   def get_check_results(self) -> dict:
       # Inspect the scan result
-      return SodaCheckResponseModel(**self.soda_scan.get_scan_results())
+      return self._soda_scan.get_scan_results()
 
-   def get_scan_logs(self) -> str | None:
+   def get_check_logs(self) -> str | None:
       # Inspect the scan logs
-      return self.soda_scan.get_logs_text()
+      return self._soda_scan.get_logs_text()
 
 
 """

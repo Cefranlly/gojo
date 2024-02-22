@@ -1,6 +1,6 @@
 from typing import Union, List, Dict
 from soda.scan import Scan
-from utils.log import get_logger
+from gojo.utils.log import get_logger
 
 
 logger = get_logger(__name__)
@@ -14,21 +14,35 @@ def read_files(files_path: str) -> Union[List[str], str]:
    return ""
 
 
-class SodaTestBuilder:
+class SodaBuilder:
    """Loads all the information needed to run a new test
    """
 
-   soda_scan: Scan
+   _soda_scan: Scan
 
    def __init__(self, soda_scan: Scan) -> None:
-      self.soda_scan = soda_scan
+      self._soda_scan = soda_scan
 
-   def add_configuration_file(self, file_path: str):
-      self.soda_scan.add_configuration_yaml_file(file_path=file_path)
+   def add_ds_configuration(self, data_source: str) -> None:
+      logger.info("add_ds_configuration - soda")
+      self._soda_scan.add_configuration_yaml_str(data_source)
 
-   def add_variables(self, variables: Dict[str, str]):
-      self.soda_scan.add_variables(variables)
+   def add_variables(self, variables: Union[List[Dict[str, str]], Dict[str, str]]) -> None:
+      if isinstance(variables, list):
+         for var in variables:
+            self._soda_scan.add_variables(var)
+      elif isinstance(variables, dict):
+         self._soda_scan.add_variables(variables)
+      else:
+         logger.info("None variables were declared")
 
-   def add_sodacl_checks(self, checks_file_path: str):
-      # TODO: Improve this to recive file or files or str
-      self.soda_scan.add_sodacl_yaml_files(checks_file_path)
+   def add_sodacl_checks(self, checks_file_path: str) -> None:
+
+      if isinstance(checks_file_path, list):
+         for individual_check in checks_file_path:
+            self._soda_scan.add_sodacl_yaml_files(individual_check)
+      elif isinstance(checks_file_path, str):
+         self._soda_scan.add_sodacl_yaml_files(checks_file_path)
+      else:
+         logger.info("No check was declared")
+         raise

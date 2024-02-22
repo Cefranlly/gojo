@@ -1,15 +1,19 @@
 """ cli/entrypoint to interact with our App
 """
 import typer
+from typing_extensions import Annotated
 from pyfiglet import Figlet
 from gojo.utils.log import get_logger
-
 # temporal added next lines
 import os
-from gojo.clients.slack.slack_message_builder import SlackMessageBuilder
-from gojo.clients.slack.client import SlackWebClient
+from typing import Optional
+from gojo.config.load_config import LoadConfig
+from gojo.runners.soda_runner import SodaRunner
 from gojo.clients.slack.schema import SlackMessageSchema
-
+from gojo.clients.slack.slack_message_builder import SlackMessageBuilder
+from gojo.quality_manager.slack.soda_msg_builder import SlackSodaMessageBuilder
+from gojo.clients.slack.client import SlackWebClient
+from gojo.quality_manager.soda_manager import SodaManager
 
 logger = get_logger(__name__)
 
@@ -49,3 +53,32 @@ def send_slack_message_test():
       channel="data-quality-notifications",
       message=messages
       )
+
+@app.command()
+def load_config_test(config_file_path: Annotated[Optional[str], typer.Argument()] = None):
+   config_loaded = LoadConfig()
+   config_loaded.load_configuration(config_file_path)
+   config = config_loaded.config
+   logger.info(f"config loaded: {config}")
+
+
+@app.command()
+def run_soda_test(config_file_path: Annotated[Optional[str], typer.Argument()] = None):
+   config_loaded = LoadConfig()
+   config_loaded.load_configuration(config_file_path)
+   config = config_loaded.config
+   logger.info("config loaded")
+   soda_runner = SodaRunner(source_name="conversenow")
+   soda_runner.set_config(config)
+   soda_runner.run()
+   results = soda_runner.return_results()
+   logger.info(f"results: {results}")
+
+
+@app.command()
+def run_and_send_soda(config_file_path: Annotated[Optional[str], typer.Argument()] = None):
+   soda_manager = SodaManager(source_name="conversenow")
+   soda_manager.set_config(config_file_path=config_file_path)
+   soda_manager.set_checks()
+   soda_manager.run_checks()
+   soda_manager.send_notifications()

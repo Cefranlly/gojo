@@ -1,12 +1,12 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
+from pydantic.dataclasses import dataclass
 
+
+@dataclass
 class Config:
-   notification_config: Dict[str, Any] = {
-      "slack_webhook": "SLACK_WEBHOOK_URL"
-   }
-   check_type = "soda"
-   test_config: Dict[str, Any] = {
-      "config_file_path": "./config/credentials/data_source.yml",
-      "variables": "2023-01-25",
-      "checks_file_path": "./config/checks/test_check.yml"
-   }
+   check_type: str # database or spark for now
+   slack_token: str
+   slack_channels: str | List[str]
+   source_config: Dict[str, Any]
+   data_test_files: str | List[str] | None
+   data_test_vars: Dict[str, Any] | List[Dict[str, Any]] | None
