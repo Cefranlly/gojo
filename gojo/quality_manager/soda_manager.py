@@ -45,6 +45,6 @@ class SodaManager(BaseManager):
 
       slack_cli = SlackWebClient(token=slack_token)
       slack_cli.send_message(
-         channel="data-quality-notifications",
+         channel=self.config.slack_channels,
          message=messages
          )
