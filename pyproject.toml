@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "gojo"
+version = "0.1.0"
+description = "Data quality platform to run and registry quality tests"
+authors = ["Felix Hernandez <you@example.com>", "Cefranlly Perez <cefranllyperez@gmail.com>"]
+license = "MIT License"
+readme = "README.md"
+
+[tool.poetry.scripts]
+gojo-run = "gojo.main:app"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.6.1"
+typer = "^0.9.0"
+google-cloud-storage = "^2.14.0"
+SQLAlchemy = "<2.0.0"
+sqlparse = "^0.4.4"
+slack-sdk = "^3.27.0"
+pyfiglet = "^1.0.2"
+soda-core-snowflake = "^3.2.1"
+soda-core-scientific = "^3.2.1"
+pandas = "<2.0.0"
+snowflake-sqlalchemy = "^1.5.1"
+PyYAML = "^6.0.1"
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+black = "^24.2.0"
+flake8 = "^7.0.0"
+pylint = "^3.0.3"
+pre-commit = "^3.6.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

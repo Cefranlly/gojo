@@ -1,0 +1,42 @@
+{
+	"name": "gojo",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "gojo-devcontainer",
+	"runServices": [
+		"gojo-devcontainer"
+	],
+	"workspaceFolder": "/workspace",
+	"settings": {
+		"python.pythonPath": "/bin/python",
+		"python.languageServer": "Pylance",
+		"python.linting.enabled": true,
+		"python.linting.flake8Enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.linting.pycodestyleEnabled": false,
+		"python.formatting.blackPath": "/usr/local/bin/black",
+		"python.linting.flake8Path": "/usr/local/bin/flake8",
+		"python.linting.pylintPath": "/usr/local/bin/pylint",
+		"python.formatting.blackArgs": [
+			"--line-length=88"
+		],
+		"python.linting.pylintArgs": [
+			"--generate-members"
+		],
+		"editor.formatOnSave": true,
+		"python.formatting.provider": "black",
+		"files.trimFinalNewlines": true,
+		"files.trimTrailingWhitespace": true,
+		"files.watcherExclude": {
+			".git/**": true,
+			"./resources/**": true,
+			"./notebooks/**": true
+		}
+	},
+	"extensions": [
+		"ms-python.python",
+		"ms-python.vscode-pylance",
+		"eamodio.gitlens",
+		"njpwerner.autodocstring",
+		"ms-azuretools.vscode-docker"
+	],
+}

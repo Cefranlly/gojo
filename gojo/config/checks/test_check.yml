@@ -1,0 +1,4 @@
+# Check for freshness
+checks for calls:
+  - freshness(start_at) < 6h
+  - duplicate_count(tracker_id) = 0
