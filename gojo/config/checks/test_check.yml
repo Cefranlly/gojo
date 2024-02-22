@@ -1,7 +1,4 @@
 # Check for freshness
 checks for calls:
   - freshness(start_at) < 6h
-
-# Check for freshness
-checks for media_incoming_calls:
-  - freshness(start_at) < 6h
+  - duplicate_count(tracker_id) = 0

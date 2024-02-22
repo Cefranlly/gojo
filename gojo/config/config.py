@@ -8,5 +8,5 @@ class Config:
    slack_token: str
    slack_channels: str | List[str]
    source_config: Dict[str, Any]
-   data_test_files: str | List[str]
-   data_test_vars: str | List[str]
+   data_test_files: str | List[str] | None
+   data_test_vars: Dict[str, Any] | List[Dict[str, Any]] | None
