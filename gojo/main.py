@@ -6,6 +6,7 @@ from pyfiglet import Figlet
 from gojo.utils.log import get_logger
 # temporal added next lines
 import os
+import json
 from typing import Optional
 from gojo.config.load_config import LoadConfig
 from gojo.runners.soda_runner import SodaRunner
@@ -76,9 +77,15 @@ def run_soda_test(config_file_path: Annotated[Optional[str], typer.Argument()] =
 
 
 @app.command()
-def run_and_send_soda(config_file_path: Annotated[Optional[str], typer.Argument()] = None):
+def run_and_send_soda(
+   config_file_path: Annotated[Optional[str], typer.Argument()] = None,
+   dt: Optional[str] = typer.Option(None, "--dt")
+   ):
    soda_manager = SodaManager(source_name="conversenow")
-   soda_manager.set_config(config_file_path=config_file_path)
+   soda_manager.set_config(
+      config_file_path=config_file_path,
+      dt=json.loads(f'{{"dt": "{dt}"}}')
+      )
    soda_manager.set_checks()
    soda_manager.run_checks()
    soda_manager.send_notifications()

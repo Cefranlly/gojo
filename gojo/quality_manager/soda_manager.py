@@ -1,5 +1,5 @@
 import os
-from typing import Union
+from typing import Union, List, Any, Dict, Optional
 from gojo.utils.log import get_logger
 from gojo.config.config import Config
 from gojo.config.load_config import LoadConfig
@@ -22,10 +22,45 @@ class SodaManager(BaseManager):
       self.soda_runner = SodaRunner(source_name=source_name)
       self.msg_builder = SlackSodaMessageBuilder()
 
-   def set_config(self, config_file_path: Union[str, None]) -> None:
-      logger.info("Load configuration for SODA checks")
+   def _add_variables(
+         self,
+         variables: Dict[str, Any] | List[Dict[str, Any]] | None,
+         dt: Dict[str, Any]
+         ) -> List[Dict[str, Any]]:
+      merged_dict = {}
+      if variables:
+         if isinstance(variables, list):
+            # logger.info("It's a list")
+            variables.append(dt)
+            for var in variables:
+               for key, value in var.items():
+                  if key not in merged_dict:
+                     merged_dict[key] = value
+         elif isinstance(variables, dict):
+            # logger.info("It's a dict")
+            variables.update(dt)
+            for key, value in variables.items():
+                  if key not in merged_dict:
+                     merged_dict[key] = value
+      else:
+         # logger.info("List was empty")
+         merged_dict = dt
+      return [{key: value} for key, value in merged_dict.items()]
+
+
+   def set_config(
+         self,
+         config_file_path: Union[str, None],
+         dt: Optional[Dict[str, Any]]
+         ) -> None:
+      logger.info("Load configuration for SODA checks!")
       self.config_loader.load_configuration(config_file_path)
       self.config = self.config_loader.config
+      if dt:
+         # Update variables that came from the commandline
+         self.config.data_test_vars = self._add_variables(self.config.data_test_vars, dt)
+
+      logger.info(f"variables: {self.config.data_test_vars}")
 
    def set_checks(self) -> None:
       self.soda_runner.set_config(self.config)

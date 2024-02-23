@@ -80,9 +80,8 @@ class SlackWebClient(SlackClient):
          blocks=message.blocks
       )
 
-      logger.info(f"slack response: {response}")
-
       if response.status_code == OK_STATUS_CODE:
+         logger.info(f"slack response OK")
          return True
       else:
          logger.error(

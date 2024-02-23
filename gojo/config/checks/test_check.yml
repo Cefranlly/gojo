@@ -1,3 +1,9 @@
+filter calls [daily]:
+  where: DATE '${dt}' = start_dt_cst
+
+checks for calls [daily]:
+  - row_count between 35000 and 70000
+
 # Check for freshness
 checks for calls:
   - freshness(start_at) < 6h
